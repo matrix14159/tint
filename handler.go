@@ -171,8 +171,10 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 
 	rep := h.replaceAttr
 
+	wasmConsole, wasm := h.w.(*WasmConsole)
+
 	// write time
-	if !r.Time.IsZero() {
+	if !wasm && !r.Time.IsZero() {
 		val := r.Time.Round(0) // strip monotonic to match Attr behavior
 		if rep == nil {
 			h.appendTime(buf, r.Time)
@@ -245,8 +247,23 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	_, err := h.w.Write(*buf)
-	return err
+	if !wasm {
+		_, err := h.w.Write(*buf)
+		return err
+	}
+	switch r.Level {
+	case slog.LevelDebug:
+		wasmConsole.Debug(*buf)
+	case slog.LevelInfo:
+		wasmConsole.Info(*buf)
+	case slog.LevelWarn:
+		wasmConsole.Warn(*buf)
+	case slog.LevelError:
+		wasmConsole.Error(*buf)
+	default:
+		wasmConsole.Log(*buf)
+	}
+	return nil
 }
 
 func (h *handler) WithAttrs(attrs []slog.Attr) slog.Handler {
