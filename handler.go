@@ -190,12 +190,14 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 	}
 
 	// write level
-	if rep == nil {
-		h.appendLevel(buf, r.Level)
-		buf.WriteByte(' ')
-	} else if a := rep(nil /* groups */, slog.Any(slog.LevelKey, r.Level)); a.Key != "" {
-		h.appendValue(buf, a.Value, false)
-		buf.WriteByte(' ')
+	if !wasm {
+		if rep == nil {
+			h.appendLevel(buf, r.Level)
+			buf.WriteByte(' ')
+		} else if a := rep(nil /* groups */, slog.Any(slog.LevelKey, r.Level)); a.Key != "" {
+			h.appendValue(buf, a.Value, false)
+			buf.WriteByte(' ')
+		}
 	}
 
 	// write source
