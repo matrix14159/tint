@@ -318,7 +318,7 @@ func (h *handler) appendSource(buf *buffer, src *slog.Source) {
 	dir, file := filepath.Split(src.File)
 
 	buf.WriteStringIf(!h.noColor, ansiFaint)
-	buf.WriteString(filepath.Join(filepath.Base(dir), file))
+	buf.WriteString(filepath.ToSlash(filepath.Join(filepath.Base(dir), file)))
 	buf.WriteByte(':')
 	buf.WriteString(strconv.Itoa(src.Line))
 	buf.WriteStringIf(!h.noColor, ansiReset)
