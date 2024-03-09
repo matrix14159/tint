@@ -244,12 +244,12 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 	if len(*buf) == 0 {
 		return nil
 	}
-	(*buf)[len(*buf)-1] = '\n' // replace last space with newline
 
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
 	if !wasm {
+		(*buf)[len(*buf)-1] = '\n' // replace last space with newline
 		_, err := h.w.Write(*buf)
 		return err
 	}
