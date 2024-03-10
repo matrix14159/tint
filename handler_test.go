@@ -24,6 +24,12 @@ func Example() {
 		TimeFormat: time.Kitchen,
 	})))
 
+	type Cat struct {
+		Name string
+		Age  int
+	}
+
+	slog.Info("log struct", "cat", Cat{Name: "tom", Age: 1})
 	slog.Info("Starting server", "addr", ":8080", "env", "production")
 	slog.Debug("Connected to DB", "db", "myapp", "host", "localhost:5432")
 	slog.Warn("Slow request", "method", "GET", "path", "/users", "duration", 497*time.Millisecond)

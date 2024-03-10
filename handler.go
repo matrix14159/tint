@@ -368,7 +368,7 @@ func (h *handler) appendAttr(buf *buffer, attr slog.Attr, groupsPrefix string, g
 		buf.WriteByte(' ')
 	} else {
 		h.appendKey(buf, attr.Key, groupsPrefix)
-		h.appendValue(buf, attr.Value, true)
+		h.appendValue(buf, attr.Value, false)
 		buf.WriteByte(' ')
 	}
 }
