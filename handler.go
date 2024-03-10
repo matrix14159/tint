@@ -383,7 +383,7 @@ func (h *handler) appendKey(buf *buffer, key, groups string) {
 func (h *handler) appendValue(buf *buffer, v slog.Value, quote bool) {
 	switch v.Kind() {
 	case slog.KindString:
-		appendString(buf, v.String(), quote)
+		appendString(buf, v.String(), true)
 	case slog.KindInt64:
 		*buf = strconv.AppendInt(*buf, v.Int64(), 10)
 	case slog.KindUint64:
@@ -395,7 +395,7 @@ func (h *handler) appendValue(buf *buffer, v slog.Value, quote bool) {
 	case slog.KindDuration:
 		appendString(buf, v.Duration().String(), quote)
 	case slog.KindTime:
-		appendString(buf, v.Time().String(), quote)
+		appendString(buf, v.Time().String(), true)
 	case slog.KindAny:
 		switch cv := v.Any().(type) {
 		case slog.Level:
@@ -405,7 +405,7 @@ func (h *handler) appendValue(buf *buffer, v slog.Value, quote bool) {
 			if err != nil {
 				break
 			}
-			appendString(buf, string(data), quote)
+			appendString(buf, string(data), true)
 		case *slog.Source:
 			h.appendSource(buf, cv)
 		default:

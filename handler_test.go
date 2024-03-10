@@ -29,6 +29,10 @@ func Example() {
 		Age  int
 	}
 
+	slog.Info("hello", "info", "there is the message")
+	slog.Info("hello", slog.Any("info", "there is the message"))
+	slog.Info("duration", "gap", 10*time.Second)
+	slog.Info("time", "now", time.Now())
 	slog.Info("log struct", "cat", Cat{Name: "tom", Age: 1})
 	slog.Info("Starting server", "addr", ":8080", "env", "production")
 	slog.Debug("Connected to DB", "db", "myapp", "host", "localhost:5432")
