@@ -222,6 +222,7 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 	}
 
 	// write message
+	msgIdx := len(*buf)
 	if rep == nil {
 		buf.WriteString(r.Message)
 		buf.WriteByte(' ')
@@ -250,8 +251,11 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 
 	if !wasm {
 		(*buf)[len(*buf)-1] = '\n' // replace last space with newline
-		_, err := h.w.Write(*buf)
-		return err
+		h.w.Write(*buf)
+		if r.Level == slog.LevelError {
+			return fmt.Errorf("%s", string((*buf)[msgIdx:]))
+		}
+		return nil
 	}
 	switch r.Level {
 	case slog.LevelDebug:
@@ -262,6 +266,7 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 		wasmConsole.Warn(*buf)
 	case slog.LevelError:
 		wasmConsole.Error(*buf)
+		return fmt.Errorf("%s", string((*buf)[msgIdx:]))
 	default:
 		wasmConsole.Log(*buf)
 	}
